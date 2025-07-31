@@ -3,11 +3,14 @@
 import { useDatabase } from '@/contexts/databaseContext';
 import { useSession } from '@clerk/nextjs';
 import { SignedInSessionResource } from '@clerk/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Onboarding from '@/components/onboarding/onboarding';
 
 export default function AppPage() {
   const { session } = useSession();
-  const { supabase, setSupabaseClient } = useDatabase();
+  const { supabase, setSupabaseClient, getUserData } = useDatabase();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showSelectInterests, setShowSelectInterests] = useState(false);
 
   useEffect(() => {
     async function initializeSupabase(session: SignedInSessionResource) {
@@ -23,6 +26,31 @@ export default function AppPage() {
       console.log('No clerk session');
     }
   }, [session, setSupabaseClient, supabase]);
+
+  useEffect(() => {
+    console.log('Supabase', supabase);
+    console.log('Session', session?.user.id);
+    if (supabase && session?.user.id) {
+      getUserData(session?.user.id).then((user) => {
+        if (user) {
+          console.log(user);
+          if (user.interests.length === 0) {
+            setShowOnboarding(false);
+            setShowSelectInterests(true);
+          } else {
+            setShowOnboarding(false);
+            setShowSelectInterests(false);
+          }
+        } else {
+          setShowOnboarding(true);
+        }
+      });
+    }
+  }, [supabase, session?.user.id, getUserData]);
+
+  if (showOnboarding) {
+    return <Onboarding />;
+  }
 
   return (
     <section className='flex items-center justify-center'>
