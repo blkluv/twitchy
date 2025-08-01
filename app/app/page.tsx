@@ -5,6 +5,7 @@ import { useSession } from '@clerk/nextjs';
 import { SignedInSessionResource } from '@clerk/types';
 import { useEffect, useState } from 'react';
 import Onboarding from '@/components/onboarding/onboarding';
+import SelectInterests from '@/components/onboarding/selectInterests';
 
 export default function AppPage() {
   const { session } = useSession();
@@ -50,6 +51,10 @@ export default function AppPage() {
 
   if (showOnboarding) {
     return <Onboarding />;
+  }
+
+  if (showSelectInterests) {
+    return <SelectInterests />;
   }
 
   return (
