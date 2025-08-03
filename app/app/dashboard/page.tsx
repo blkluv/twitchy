@@ -14,6 +14,7 @@ import { useDatabase } from '@/contexts/databaseContext';
 import { useSession } from '@clerk/nextjs';
 import { getClient } from '@/lib/streamClient';
 import { createToken } from '@/app/actions';
+import MyChat from '@/components/myChat/myChat';
 
 export default function Dashboard() {
   const [client, setClient] = useState<StreamVideoClient | null>(null);
@@ -21,6 +22,9 @@ export default function Dashboard() {
 
   const { session } = useSession();
   const { supabase, getUserData, setSupabaseClient } = useDatabase();
+
+  const [chatExpanded, setChatExpanded] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     const enterCall = async () => {
@@ -66,20 +70,34 @@ export default function Dashboard() {
       await streamCall.join({ create: true });
       setClient(streamClient);
       setCall(streamCall);
+      setUserName(userData.user_name);
     };
     enterCall();
   }, [session, getUserData, supabase, setSupabaseClient, client, call]);
 
   return (
-    <section className='grid grid-cols-1'>
+    <section className={`grid ${chatExpanded ? 'grid-cols-2' : 'grid-cols-1'}`}>
       {client && call && (
         <StreamTheme>
           <StreamVideo client={client}>
             <StreamCall call={call}>
-              <StreamerView call={call} />
+              <StreamerView
+                call={call}
+                chatExpanded={chatExpanded}
+                setChatExpanded={setChatExpanded}
+              />
             </StreamCall>
           </StreamVideo>
         </StreamTheme>
+      )}
+      {chatExpanded && session?.user && userName && (
+        <div className='w-full h-full max-h-[700px]'>
+          <MyChat
+            userId={session?.user.id}
+            userName={userName}
+            setChatExpanded={setChatExpanded}
+          />
+        </div>
       )}
     </section>
   );

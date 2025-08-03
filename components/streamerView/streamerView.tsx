@@ -6,12 +6,20 @@ import {
 } from '@stream-io/video-react-sdk';
 import { ParticipantView } from '@stream-io/video-react-sdk';
 import { Button } from '../button/button';
-import { User } from '../icons';
+import { ArrowRight, User } from '../icons';
 import { useState, useEffect } from 'react';
 import GoLiveForm from './goLiveForm';
 import { useSession } from '@clerk/nextjs';
 
-export default function StreamerView({ call }: { call: Call }) {
+export default function StreamerView({
+  call,
+  chatExpanded,
+  setChatExpanded,
+}: {
+  call: Call;
+  chatExpanded: boolean;
+  setChatExpanded: (expanded: boolean) => void;
+}) {
   const [showGoLiveForm, setShowGoLiveForm] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string | null>(null);
   const { session } = useSession();
@@ -96,6 +104,17 @@ export default function StreamerView({ call }: { call: Call }) {
           )}
         </>
       </div>
+      {!chatExpanded && setChatExpanded && (
+        <button
+          className={`absolute top-4 right-4 bg-slate-100/40 p-4 rounded-full text-sm text-secondary text-black flex gap-2 ${
+            chatExpanded ? 'rotate-180' : ''
+          } transition-transform duration-150 ease-in-out`}
+          onClick={() => setChatExpanded(!chatExpanded)}
+        >
+          <ArrowRight />
+          <span>Open chat</span>
+        </button>
+      )}
       <div className='flex gap-4 p-6'>
         <div className='flex items-center'>
           <User />

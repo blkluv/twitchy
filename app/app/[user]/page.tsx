@@ -20,6 +20,7 @@ import InterestComponent from '@/components/onboarding/interestComponent';
 import LivestreamWatching from '@/components/livestreamWatching/livestreamWatching';
 import { getClient } from '@/lib/streamClient';
 import { createToken } from '@/app/actions';
+import MyChat from '@/components/myChat/myChat';
 
 export default function UserPage({
   params,
@@ -150,99 +151,108 @@ export default function UserPage({
   };
 
   return (
-    <div className='h-full overflow-y-scroll'>
-      <section className='min-h-72 max-h-[500px] w-full'>
-        {isLoading && (
-          <div className='h-full w-full flex items-center justify-center text-2xl'>
-            <p>Loading...</p>
-          </div>
-        )}
-        {!isLoading && (!call || call.state.backstage) && (
-          <div className='flex items-center justify-center min-h-72 max-h-[500px] w-full bg-gradient-to-r from-twitch-purple via-violet-400 to-twitch-purple'>
-            <div className='text-center text-white opacity-80 mix-blend-dark-light'>
-              <h1 className='text-4xl font-extrabold drop-shadow-lg'>
-                Stream Offline
-              </h1>
-              <p className='mt-2 text-lg drop-shadow-md'>
-                {streamerData?.user_name} is not currently streaming. Check back
-                later!
-              </p>
+    <div className='h-full overflow-y-scroll grid grid-cols-2'>
+      <div>
+        <section className='min-h-72 max-h-[500px] w-full'>
+          {isLoading && (
+            <div className='h-full w-full flex items-center justify-center text-2xl'>
+              <p>Loading...</p>
             </div>
-          </div>
-        )}
-        {!isLoading && streamClient && call && !call.state.backstage && (
-          <StreamTheme>
-            <StreamVideo client={streamClient}>
-              <StreamCall call={call}>
-                <LivestreamWatching />
-              </StreamCall>
-            </StreamVideo>
-          </StreamTheme>
-        )}
-      </section>
-      {streamerData && (
-        <section className='space-y-4'>
-          <div className='flex items-center justify-between p-4'>
-            <div className='flex items-center space-x-4'>
-              <Image
-                src={streamerData.image_url}
-                alt={streamerData.user_name}
-                width={60}
-                height={60}
-                className='rounded-full'
-              />
+          )}
+          {!isLoading && (!call || call.state.backstage) && (
+            <div className='flex items-center justify-center min-h-72 max-h-[500px] w-full bg-gradient-to-r from-twitch-purple via-violet-400 to-twitch-purple'>
+              <div className='text-center text-white opacity-80 mix-blend-dark-light'>
+                <h1 className='text-4xl font-extrabold drop-shadow-lg'>
+                  Stream Offline
+                </h1>
+                <p className='mt-2 text-lg drop-shadow-md'>
+                  {streamerData?.user_name} is not currently streaming. Check
+                  back later!
+                </p>
+              </div>
+            </div>
+          )}
+          {!isLoading && streamClient && call && !call.state.backstage && (
+            <StreamTheme>
+              <StreamVideo client={streamClient}>
+                <StreamCall call={call}>
+                  <LivestreamWatching />
+                </StreamCall>
+              </StreamVideo>
+            </StreamTheme>
+          )}
+        </section>
+        {streamerData && (
+          <section className='space-y-4'>
+            <div className='flex items-center justify-between p-4'>
+              <div className='flex items-center space-x-4'>
+                <Image
+                  src={streamerData.image_url}
+                  alt={streamerData.user_name}
+                  width={60}
+                  height={60}
+                  className='rounded-full'
+                />
 
-              <div>
-                <h2 className='text-xl font-bold'>{streamerData.user_name}</h2>
-                <p>{streamerData.followers.length} followers</p>
+                <div>
+                  <h2 className='text-xl font-bold'>
+                    {streamerData.user_name}
+                  </h2>
+                  <p>{streamerData.followers.length} followers</p>
+                </div>
+              </div>
+
+              <div className='flex items-center space-x-4'>
+                {session?.user.id !== user && (
+                  <Button
+                    variant='primary'
+                    onClick={handleFollow}
+                    disabled={isFollowLoading}
+                  >
+                    {isFollowLoading
+                      ? 'Following...'
+                      : isFollowing
+                      ? 'Unfollow'
+                      : 'Follow'}
+                  </Button>
+                )}
+                <Button variant='icon'>
+                  <EllipsisVertical />
+                </Button>
               </div>
             </div>
 
-            <div className='flex items-center space-x-4'>
-              {session?.user.id !== user && (
-                <Button
-                  variant='primary'
-                  onClick={handleFollow}
-                  disabled={isFollowLoading}
-                >
-                  {isFollowLoading
-                    ? 'Following...'
-                    : isFollowing
-                    ? 'Unfollow'
-                    : 'Follow'}
-                </Button>
-              )}
-              <Button variant='icon'>
-                <EllipsisVertical />
-              </Button>
+            <div className='p-4 space-y-2'>
+              <h2 className='text-2xl font-bold'>Interests</h2>
+              <div className='flex gap-4 overflow-x-scroll'>
+                {streamerData.interests.map((interest, index) => (
+                  <InterestComponent
+                    key={`${interest}-${index}`}
+                    interest={interest}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className='p-4 space-y-2'>
-            <h2 className='text-2xl font-bold'>Interests</h2>
-            <div className='flex gap-4 overflow-x-scroll'>
-              {streamerData.interests.map((interest, index) => (
-                <InterestComponent
-                  key={`${interest}-${index}`}
-                  interest={interest}
-                />
+            <div className='p-4 space-y-2'>
+              <h2 className='text-2xl font-bold'>Following</h2>
+              {streamerData.following.length === 0 && (
+                <p>{streamerData.user_name} is not following anyone</p>
+              )}
+              {streamerData.following.map((following, index) => (
+                <div key={`${following}-${index}`}>
+                  <p>{following}</p>
+                </div>
               ))}
             </div>
-          </div>
-
-          <div className='p-4 space-y-2'>
-            <h2 className='text-2xl font-bold'>Following</h2>
-            {streamerData.following.length === 0 && (
-              <p>{streamerData.user_name} is not following anyone</p>
-            )}
-            {streamerData.following.map((following, index) => (
-              <div key={`${following}-${index}`}>
-                <p>{following}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+          </section>
+        )}
+      </div>
+      <section className='max-h-1/2'>
+        {session?.user.id && (
+          <MyChat userId={session?.user.id} userName={user} />
+        )}
+      </section>
     </div>
   );
 }
