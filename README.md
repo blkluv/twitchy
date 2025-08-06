@@ -1,3 +1,5 @@
+![new thumbnail 002](https://github.com/user-attachments/assets/cc6cf07d-f454-4954-8775-369e6d40b763)
+
 # Full Stack Twitch Clone using Clerk, Supabase, and Stream Video + Chat
 
 This repository demonstrates how to build a full-stack clone of Twitch, using the following tech:
