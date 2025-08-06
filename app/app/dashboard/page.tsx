@@ -95,6 +95,7 @@ export default function Dashboard() {
           <MyChat
             userId={session?.user.id}
             userName={userName}
+            isStreamer={true}
             setChatExpanded={setChatExpanded}
           />
         </div>

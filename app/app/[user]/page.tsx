@@ -42,6 +42,7 @@ export default function UserPage({
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [currentUserData, setCurrentUserData] = useState<string | undefined>();
 
   useEffect(() => {
     const joinCall = async () => {
@@ -106,6 +107,7 @@ export default function UserPage({
         if (currentUserData && currentUserData.following.includes(user)) {
           setIsFollowing(true);
         }
+        setCurrentUserData(currentUserData?.user_name);
       }
     };
     initializeClients();
@@ -250,7 +252,11 @@ export default function UserPage({
       </div>
       <section className='max-h-1/2'>
         {session?.user.id && (
-          <MyChat userId={session?.user.id} userName={user} />
+          <MyChat
+            userId={session?.user.id}
+            userName={currentUserData || 'Test User'}
+            isStreamer={false}
+          />
         )}
       </section>
     </div>
