@@ -23,6 +23,8 @@ This repository is intended to be an accompanying piece for the tutorials we've 
 
 If you enjoy this content, feel free to give this repo a ⭐️ and let us know what to build next on [X](https://x.com/getstream_io) or [LinkedIn](https://www.linkedin.com/company/getstream).
 
+Try Stream today for free: https://gstrm.io/45nQEF3
+
 ## How to run the project locally?
 
 First of all, you should clone the repo with the following command:
@@ -79,5 +81,6 @@ If you're interested in Stream-related content in that realm, I recommend lookin
 - [Backend SDKs documentation](https://getstream.io/chat/docs/node/)
 - [Chat Tutorial](https://getstream.io/chat/react-chat/tutorial/)
 - [Chat SDK](https://getstream.io/chat/docs/sdk/react/)
+- [Test the SDK for free](https://gstrm.io/45nQEF3)
 
 If you have requests, enjoyed the projects, or have any other questions, feel free to always contact us on [X](https://x.com/getstream_io) or [LinkedIn](https://www.linkedin.com/company/getstream). We hope you find value in this project and wish you the best for your endeavours!
